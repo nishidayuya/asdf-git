@@ -16,7 +16,6 @@
 # Dependencies
 
 - `bash`, `curl`, `tar`, and [POSIX utilities](https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html).
-- `SOME_ENV_VAR`: set this environment variable in your shell config to load the correct version of tool x.
 
 # Install
 
@@ -32,13 +31,13 @@ git:
 
 ```shell
 # Show all installable versions
-asdf list-all git
+asdf list all git
 
 # Install specific version
 asdf install git latest
 
 # Set a version globally (on your ~/.tool-versions file)
-asdf global git latest
+asdf set -u git latest
 
 # Now git commands are available
 git version
