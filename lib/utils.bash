@@ -33,7 +33,8 @@ list_github_tags() {
 list_all_versions() {
 	# TODO: Adapt this. By default we simply list the tag names from GitHub releases.
 	# Change this function if git has other means of determining installable versions.
-	list_github_tags
+	list_github_tags |
+		sed '/^gitgui-/d; /^junio-gpg-pub$/d'
 }
 
 download_release() {
@@ -41,8 +42,10 @@ download_release() {
 	version="$1"
 	filename="$2"
 
-	# TODO: Adapt the release URL convention for git
-	url="$GH_REPO/archive/v${version}.tar.gz"
+	# Adapt the release URL convention for git
+	#
+	# ./configure script is needed. But, GitHub.com's tag does not contain it.
+	url="https://mirrors.edge.kernel.org/pub/software/scm/git/git-${version}.tar.gz"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
@@ -51,7 +54,7 @@ download_release() {
 install_version() {
 	local install_type="$1"
 	local version="$2"
-	local install_path="${3%/bin}/bin"
+	local install_path="$3"
 
 	if [ "$install_type" != "version" ]; then
 		fail "asdf-$TOOL_NAME supports release installs only"
@@ -59,12 +62,15 @@ install_version() {
 
 	(
 		mkdir -p "$install_path"
-		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
+		cd "$ASDF_DOWNLOAD_PATH"
+		./configure --prefix="$install_path"
+		make "-j$(nproc)"
+		make install
 
 		# TODO: Assert git executable exists.
 		local tool_cmd
 		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
-		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
+		test -x "$install_path/bin/$tool_cmd" || fail "Expected $install_path/bin/$tool_cmd to be executable."
 
 		echo "$TOOL_NAME $version installation was successful!"
 	) || (
