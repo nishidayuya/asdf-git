@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eux
+
+asdf plugin add git /opt/asdf-git
+asdf install git latest
+asdf set --home git latest
