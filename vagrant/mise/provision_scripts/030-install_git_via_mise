@@ -1,0 +1,9 @@
+#!/bin/bash
+
+eval "$(~/.local/bin/mise activate bash --shims)"
+
+set -eux
+
+mise plugin add git file:///opt/asdf-git
+mise install git@latest
+mise global git@latest
