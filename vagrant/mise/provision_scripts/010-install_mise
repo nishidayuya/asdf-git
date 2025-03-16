@@ -4,6 +4,11 @@
 
 set -eux -o pipefail
 
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends \
+	curl \
+	git
+
 curl https://mise.run | sh
 
 echo 'eval "$(~/.local/bin/mise activate bash)"' >>~/.bashrc
