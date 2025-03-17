@@ -16,6 +16,9 @@
 # Dependencies
 
 - `bash`, `curl`, `tar`, and [POSIX utilities](https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html).
+- Building Git dependencies:
+    - gcc, make and so on.
+    - eg. Runnable Debian GNU/Linux 12 case is [here](vagrant/mise/provision_scripts/020-install_git_build_dependencies) !
 
 # Install
 
