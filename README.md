@@ -25,10 +25,10 @@
 Plugin:
 
 ```shell
-asdf plugin add git
-# or
 asdf plugin add git https://github.com/nishidayuya/asdf-git.git
 ```
+
+asdf-git will never be added to the official Mise registry :sob: (see https://github.com/jdx/mise/pull/4694#issuecomment-2747820332 )
 
 git:
 
