@@ -12,6 +12,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     gpg \
     gnupg \
     build-essential \
+    cargo \
     libssl-dev \
     libyaml-dev \
     libreadline6-dev \
