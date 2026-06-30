@@ -49,6 +49,32 @@ git version
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
 install & manage versions.
 
+## Contrib commands
+
+Git ships extra commands under the `contrib/` directory of its source tarball.
+By default this plugin builds and installs **every** contrib command whose
+`Makefile` provides an `install` target (for example `git subtree`):
+
+```shell
+git subtree --help
+```
+
+A contrib command that fails to build (for example a platform-specific one such
+as `credential/wincred` on non-Windows systems) is reported and skipped without
+aborting the Git installation.
+
+You can choose exactly which contrib commands to install with the
+`ASDF_GIT_CONTRIBS` environment variable (a space-separated list of paths
+relative to `contrib/`):
+
+```shell
+# Install only git-subtree and git-contacts
+ASDF_GIT_CONTRIBS="subtree contacts" asdf install git latest
+
+# Skip installing contrib commands entirely
+ASDF_GIT_CONTRIBS="" asdf install git latest
+```
+
 # Contributing
 
 Contributions of any kind welcome! See the [contributing guide](contributing.md).
