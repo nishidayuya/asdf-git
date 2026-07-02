@@ -51,19 +51,13 @@ download_release() {
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
-# Print the contrib commands (paths relative to contrib/, e.g. "subtree" or
-# "credential/netrc") whose Makefile provides an `install` target.
-list_installable_contribs() {
-	local contrib_base="$ASDF_DOWNLOAD_PATH/contrib"
-	local makefile dir
-
-	while IFS= read -r makefile; do
-		if grep -q '^install:' "$makefile"; then
-			dir="$(dirname "$makefile")"
-			echo "${dir#"$contrib_base"/}"
-		fi
-	done < <(find "$contrib_base" -name Makefile | sort)
-}
+# Contrib commands installed by default (paths relative to contrib/). These are
+# the ones that are useful on GNU/Linux systems and build with this plugin's
+# documented dependencies. Deliberately excluded are the platform-specific
+# credential helpers that cannot build on GNU/Linux (credential/osxkeychain is
+# macOS-only, credential/wincred is Windows-only) and credential/libsecret,
+# which needs extra libraries (libsecret and GLib) beyond those dependencies.
+DEFAULT_GIT_CONTRIBS="subtree contacts credential/netrc"
 
 install_contribs() {
 	local install_path="$1"
@@ -71,13 +65,13 @@ install_contribs() {
 	local contribs contrib contrib_dir
 
 	# ASDF_GIT_CONTRIBS is a space-separated list of contrib commands to install
-	# (see lib/utils.bash documentation in README). When it is unset, every
-	# contrib command that provides an install target is installed; when it is
-	# set to an empty string, no contrib command is installed.
+	# (see lib/utils.bash documentation in README). When it is unset, the
+	# GNU/Linux-friendly defaults above are installed; when it is set to an empty
+	# string, no contrib command is installed.
 	if [ -n "${ASDF_GIT_CONTRIBS+set}" ]; then
 		contribs="$ASDF_GIT_CONTRIBS"
 	else
-		contribs="$(list_installable_contribs)"
+		contribs="$DEFAULT_GIT_CONTRIBS"
 	fi
 
 	for contrib in $contribs; do
