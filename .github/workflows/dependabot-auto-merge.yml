@@ -4,7 +4,6 @@ on:
   pull_request:
 
 permissions:
-  contents: write
   pull-requests: write
 
 jobs:
@@ -17,8 +16,8 @@ jobs:
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Enable auto-merge
-        run: gh pr merge --auto --merge "$PR_URL"
+      - name: Ask Dependabot to merge after CI passes
+        run: gh pr comment "$PR_URL" --body "@dependabot merge"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
