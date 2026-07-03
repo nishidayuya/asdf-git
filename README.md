@@ -49,6 +49,42 @@ git version
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
 install & manage versions.
 
+## Contrib commands
+
+Git ships extra commands under the `contrib/` directory of its source tarball.
+By default this plugin builds and installs the ones that are useful on GNU/Linux
+systems and build with the dependencies listed above:
+
+- `subtree` (`git subtree`)
+- `contacts` (`git contacts`)
+- `credential/netrc` (`git-credential-netrc`)
+
+```shell
+git subtree --help
+```
+
+Platform-specific credential helpers that cannot build on GNU/Linux
+(`credential/osxkeychain` is macOS-only, `credential/wincred` is Windows-only)
+and `credential/libsecret` (which needs libsecret and GLib) are excluded from
+the defaults.
+
+You can choose exactly which contrib commands to install with the
+`ASDF_GIT_CONTRIBS` environment variable (a space-separated list of paths
+relative to `contrib/`). Only directories whose `Makefile` provides an `install`
+target are supported, and a contrib that fails to build is reported and skipped
+without aborting the Git installation:
+
+```shell
+# Install only git-subtree and git-contacts
+ASDF_GIT_CONTRIBS="subtree contacts" asdf install git latest
+
+# Also install the libsecret credential helper (needs libsecret and GLib)
+ASDF_GIT_CONTRIBS="subtree contacts credential/netrc credential/libsecret" asdf install git latest
+
+# Skip installing contrib commands entirely
+ASDF_GIT_CONTRIBS="" asdf install git latest
+```
+
 # Contributing
 
 Contributions of any kind welcome! See the [contributing guide](contributing.md).
