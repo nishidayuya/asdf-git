@@ -31,6 +31,24 @@ exec devcontainer exec bash -eux -c '
   git version
   git version --build-options | grep "^rust: enabled"
 
+  # Remove the asdf install before the mise verification below. The asdf git
+  # shim would otherwise break mise: when mise runs plugin scripts it puts its
+  # asdf-compatibility wrapper (.fake-asdf) before the real asdf in PATH, so
+  # the shim ends up calling `mise exec git ls-remote --tags ...`, which mise
+  # cannot parse.
+  asdf plugin remove git
+  # Drop the command hash so `git` no longer points at the removed asdf shim.
+  hash -r
+
+  # Verify that asdf-git also works as a mise plugin.
+  mise plugin add git "file://$PWD"
+  mise install git@latest
+  mise use -g git@latest
+  mise which git
+  command -v git
+  git version
+  git version --build-options | grep "^rust: enabled"
+
   # Verify connectivity to AI API endpoints (Firewall test)
   # Even with dummy keys, these should connect (getting 401/403/404 instead of timeout/refusal)
   check_connectivity() {
