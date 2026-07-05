@@ -16,6 +16,39 @@ exec devcontainer exec bash -eux -c '
 
   devcontainer --version
 
+  # Verify that asdf-git can build and install Git from source. Recent Git
+  # (2.55+) compiles its Rust code by default, so this also checks that the
+  # Rust toolchain in this image is sufficient.
+  asdf plugin add git "$PWD"
+  # Resolve the version before installing: `asdf install` creates a git shim,
+  # and until a version is set, plugin scripts that run `git ls-remote` (such
+  # as latest-stable) would resolve git to the shim and fail. `asdf set` also
+  # needs a concrete version because asdf 0.19 does not resolve "latest".
+  git_version="$(asdf latest git)"
+  asdf install git "$git_version"
+  asdf set --home git "$git_version"
+  command -v git
+  git version
+  git version --build-options | grep "^rust: enabled"
+
+  # Remove the asdf install before the mise verification below. The asdf git
+  # shim would otherwise break mise: when mise runs plugin scripts it puts its
+  # asdf-compatibility wrapper (.fake-asdf) before the real asdf in PATH, so
+  # the shim ends up calling `mise exec git ls-remote --tags ...`, which mise
+  # cannot parse.
+  asdf plugin remove git
+  # Drop the command hash so `git` no longer points at the removed asdf shim.
+  hash -r
+
+  # Verify that asdf-git also works as a mise plugin.
+  mise plugin add git "file://$PWD"
+  mise install git@latest
+  mise use -g git@latest
+  mise which git
+  command -v git
+  git version
+  git version --build-options | grep "^rust: enabled"
+
   # Verify connectivity to AI API endpoints (Firewall test)
   # Even with dummy keys, these should connect (getting 401/403/404 instead of timeout/refusal)
   check_connectivity() {
