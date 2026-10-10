@@ -18,7 +18,20 @@
 - `bash`, `curl`, `tar`, and [POSIX utilities](https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html).
 - Building Git dependencies:
     - gcc, make and so on.
-    - eg. Runnable Debian GNU/Linux 12 case is [here](vagrant/mise/provision_scripts/020-install_git_build_dependencies) !
+    - Rust toolchain (`cargo` and `rustc`). Git 2.55 and later compile their
+      Rust code by default. See [Building without Rust](#building-without-rust)
+      if you do not want to install it.
+    - eg. On Debian GNU/Linux 13:
+
+      ```shell
+      sudo apt-get install -y --no-install-recommends \
+        build-essential \
+        cargo \
+        gettext \
+        libcurl4-openssl-dev \
+        libexpat1-dev \
+        zlib1g-dev
+      ```
 
 # Install
 
@@ -48,6 +61,16 @@ git version
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
 install & manage versions.
+
+## Building without Rust
+
+Git 2.55 and later compile their Rust code by default, so building them fails
+when the Rust toolchain is not installed. Set the `NO_RUST` environment
+variable to build Git without the features and subsystems written in Rust:
+
+```shell
+NO_RUST=1 asdf install git latest
+```
 
 ## Contrib commands
 
