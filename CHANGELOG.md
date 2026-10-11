@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/nishidayuya/asdf-git/compare/v1.1.0...v1.1.1) (2026-10-11)
+
+
+### Bug Fixes
+
+* **vagrant:** install cargo to build Git with Rust ([6ad46e6](https://github.com/nishidayuya/asdf-git/commit/6ad46e604fcd54acbdce123e8a8c24fdaae027ec))
+* **vagrant:** install cargo to build Git with Rust ([ded40fa](https://github.com/nishidayuya/asdf-git/commit/ded40fa7baccf9e82dd1168f44240430584ad49f))
+
 ## [1.1.0](https://github.com/nishidayuya/asdf-git/compare/v1.0.0...v1.1.0) (2026-07-03)
 
 
